@@ -10,7 +10,7 @@ void setup() {
 }
 
 void loop() {
-  int dev_A = 0x5A << 1;
+  int dev_A = 0x2B << 1;
   int data_low = 0;
   int data_high = 0;
   int pec = 0;
