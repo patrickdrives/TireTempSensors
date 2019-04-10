@@ -38,21 +38,27 @@ void loop() {
         drawFrame(35, 90, 285, 130); // Custom Function -Highlighs the buttons when it's pressed
         currentPage = '1'; // Indicates that we are the first example
         myGLCD.clrScr(); // Clears the screen
-        drawDistanceSensor(); // It is called only once, because in the next iteration of the loop, this above if statement will be false so this funtion won't be called. This function will draw the graphics of the first example.
+        liveTemps(); // It is called only once, because in the next iteration of the loop, this above if statement will be false so this funtion won't be called. This function will draw the graphics of the first example.
         }
-  
       }
     }
   
-  // Distance Sensor Example
+  // Live Temp Display
   if (currentPage == '1') {    
       tempDisplay(); // Gets distance from the sensor and this function is repeatedly called while we are at the first example in order to print the lasest results from the distance sensor
       if (myTouch.dataAvailable()) {
         myTouch.read();
         x=myTouch.getX();
         y=myTouch.getY();
-      }
-  }
+      }  
+    // If we press the Back Button
+        if ((x>=10) && (x<=60) &&(y>=10) && (y<=36)) {
+          drawFrame(10, 10, 60, 36);
+          currentPage = '0'; // Indicates we are at home screen
+          myGLCD.clrScr();
+          drawHomeScreen(); // Draws the home screen
+        }
+    }
 }
 // ====== Custom Funtions ======
 // drawHomeScreen - Custom Function
@@ -68,7 +74,6 @@ void drawHomeScreen() {
   myGLCD.setFont(SmallFont); // Sets the font to small
   myGLCD.print("Racecars suck, dont bother", CENTER, 61); // Prints the string
 
-  
   // Button - Live Tire Temps
   myGLCD.setColor(16, 167, 103); // Sets green color
   myGLCD.fillRoundRect (35, 90, 285, 130); // Draws filled rounded rectangle
@@ -78,7 +83,7 @@ void drawHomeScreen() {
   myGLCD.setBackColor(16, 167, 103); // Sets the background color of the area where the text will be printed to green, same as the button
   myGLCD.print("Live Tire Temps", CENTER, 102); // Prints the string
   
-  // Button - RGB LED Control
+  // Button - Data Logging
   myGLCD.setColor(16, 167, 103);
   myGLCD.fillRoundRect (35, 140, 285, 180);
   myGLCD.setColor(255, 255, 255);
@@ -98,7 +103,7 @@ void drawFrame(int x1, int y1, int x2, int y2) {
     myGLCD.drawRoundRect (x1, y1, x2, y2);
 }
 //====================================================
-void drawDistanceSensor() {
+void liveTemps() {
   myGLCD.setColor(100, 155, 203);
   myGLCD.fillRoundRect (10, 10, 60, 36);
   myGLCD.setColor(255, 255, 255);
@@ -112,8 +117,7 @@ void drawDistanceSensor() {
   myGLCD.setFont(BigFont);
   myGLCD.print("Tire Temperatures", CENTER, 45);
   
- 
-
+//-------REARS--------
   //LR Wheel Outer
   myGLCD.setColor(223, 77, 55);
   myGLCD.fillRoundRect (30, 140, 60, 200);
@@ -146,12 +150,20 @@ void drawDistanceSensor() {
   myGLCD.setBackColor(223, 77, 55);
   myGLCD.setColor(255, 255, 255);
   
-//----------------------------------------------------------------------------------------------------
+//-------FRONTS-------
    //LF Wheel Outer
   myGLCD.setColor(223, 77, 55);
   myGLCD.fillRoundRect (30, 130, 60, 70);
   myGLCD.setColor(255, 255, 255);
   myGLCD.drawRoundRect (30, 130, 60, 70);
+  myGLCD.setBackColor(223, 77, 55);
+  myGLCD.setColor(255, 255, 255);
+  
+  //LF Wheel Centre
+  myGLCD.setColor(223, 77, 55);
+  myGLCD.fillRoundRect (61, 130, 91, 70);
+  myGLCD.setColor(255, 255, 255);
+  myGLCD.drawRoundRect (61, 130, 91, 70);
   myGLCD.setBackColor(223, 77, 55);
   myGLCD.setColor(255, 255, 255);
   
@@ -171,6 +183,14 @@ void drawDistanceSensor() {
   myGLCD.setBackColor(223, 77, 55);
   myGLCD.setColor(255, 255, 255);
   
+    //RF Wheel Centre
+  myGLCD.setColor(223, 77, 55);
+  myGLCD.fillRoundRect (131, 130, 161, 70);
+  myGLCD.setColor(255, 255, 255);
+  myGLCD.drawRoundRect (131, 130, 161, 70);
+  myGLCD.setBackColor(223, 77, 55);
+  myGLCD.setColor(255, 255, 255);
+  
   //RF Wheel Inner
   myGLCD.setColor(223, 77, 55);
   myGLCD.fillRoundRect (131, 130, 161, 70);
@@ -180,49 +200,4 @@ void drawDistanceSensor() {
   myGLCD.setColor(255, 255, 255);
  
 }
-void tempDisplay(){
 
-}
-
-/*
-//====================================================
-//===== getDistance - Custom Function
-
- * void getDistance() {
-  // Clears the trigPin
-  digitalWrite(trigPin, LOW);
-  delayMicroseconds(2);
-  // Sets the trigPin on HIGH state for 10 micro seconds
-  digitalWrite(trigPin, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(trigPin, LOW);
-  // Reads the echoPin, returns the sound wave travel time in microseconds
-  duration = pulseIn(echoPin, HIGH);
-  // Calculating the distance
-  distanceCm= duration*0.034/2;
-  distanceInch= distanceCm/2.53;
-  // Prints the distance in centimeters
-  if (selectedUnit == '0' && distanceCm <=400) {
-    myGLCD.setFont(SevenSegNumFont);
-    myGLCD.setColor(0, 255, 0);
-    myGLCD.setBackColor(0, 0, 0);
-    myGLCD.printNumI(distanceCm,130, 145, 3,'0');
-    myGLCD.setFont(BigFont);
-    myGLCD.print("cm  ", 235, 178);
-  
-  }
-  // Prints the distance in inches
-  if (selectedUnit == '1' && distanceCm <=160) {
-    myGLCD.setFont(SevenSegNumFont);
-    myGLCD.setColor(0, 255, 0);
-    myGLCD.setBackColor(0, 0, 0);
-    myGLCD.printNumI(distanceInch,130, 145, 3,'0');
-    myGLCD.setFont(BigFont);
-    myGLCD.print("inch", 235, 178);
-  } 
-  delay(10);
-}
-*/
-//====================================================
-
-  // Maps the values of the X - Axis from 38 to 0 and 310 to 255, because we need values from 0 to 255 for turning on the led
