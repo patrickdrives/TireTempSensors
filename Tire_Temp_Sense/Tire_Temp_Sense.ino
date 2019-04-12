@@ -1,6 +1,8 @@
 
 #include <UTFT.h> 
 #include <URTouch.h>
+#include <SD.h>
+#include <SPI.h>
 
 //==== Creating Objects
 UTFT    myGLCD(ILI9341_16,38,39,40,41); //Parameters should be adjusted to your Display/Shield model
@@ -25,9 +27,12 @@ void setup() {
   currentPage = '0'; // Indicates that we are at Home Screen
   selectedUnit = '0'; // Indicates the selected unit for the first example, cms or inches
 }
+
 void loop() { 
+
   // Home Screen
   if (currentPage == '0') {
+    
     if (myTouch.dataAvailable()) {
       myTouch.read();
       x=myTouch.getX(); // X coordinate where the screen has been pressed
@@ -45,7 +50,7 @@ void loop() {
   
   // Live Temp Display
   if (currentPage == '1') {    
-      tempDisplay(); // Gets distance from the sensor and this function is repeatedly called while we are at the first example in order to print the lasest results from the distance sensor
+      //tempDisplay(); // Gets distance from the sensor and this function is repeatedly called while we are at the first example in order to print the lasest results from the distance sensor
       if (myTouch.dataAvailable()) {
         myTouch.read();
         x=myTouch.getX();
@@ -60,8 +65,7 @@ void loop() {
         }
     }
 }
-// ====== Custom Funtions ======
-// drawHomeScreen - Custom Function
+
 void drawHomeScreen() {
   // Title
   myGLCD.setBackColor(0,0,0); // Sets the background color of the area where the text will be printed to black
@@ -116,88 +120,41 @@ void liveTemps() {
   myGLCD.print("Back to Main Menu", 70, 18);
   myGLCD.setFont(BigFont);
   myGLCD.print("Tire Temperatures", CENTER, 45);
+
+
+
+
+//=== Wheel Labels ===
+  myGLCD.setFont(SmallFont);
+  myGLCD.print("LF", 10, 110);
+  myGLCD.print("RF", 240, 110);
+  myGLCD.print("LR", 10, 180);
+  myGLCD.print("RR", 240, 180);
   
-//-------REARS--------
-  //LR Wheel Outer
-  myGLCD.setColor(223, 77, 55);
-  myGLCD.fillRoundRect (30, 140, 60, 200);
-  myGLCD.setColor(255, 255, 255);
-  myGLCD.drawRoundRect (30, 140, 60, 200);
-  myGLCD.setBackColor(223, 77, 55);
-  myGLCD.setColor(255, 255, 255);
-  
-  //LR Wheel Inner
-  myGLCD.setColor(223, 77, 55);
-  myGLCD.fillRoundRect (61, 140, 91, 200);
-  myGLCD.setColor(255, 255, 255);
-  myGLCD.drawRoundRect (61, 140, 91, 200);
-  myGLCD.setBackColor(223, 77, 55);
-  myGLCD.setColor(255, 255, 255);
-  
-  //RR Wheel Outer
-  myGLCD.setColor(223, 77, 55);
-  myGLCD.fillRoundRect (100, 140, 130, 200);
-  myGLCD.setColor(255, 255, 255);
-  myGLCD.drawRoundRect (100, 140, 130, 200);
-  myGLCD.setBackColor(223, 77, 55);
-  myGLCD.setColor(255, 255, 255);
-  
-  //RR Wheel Inner
-  myGLCD.setColor(223, 77, 55);
-  myGLCD.fillRoundRect (131, 140, 161, 200);
-  myGLCD.setColor(255, 255, 255);
-  myGLCD.drawRoundRect (131, 140, 161, 200);
-  myGLCD.setBackColor(223, 77, 55);
-  myGLCD.setColor(255, 255, 255);
-  
-//-------FRONTS-------
-   //LF Wheel Outer
-  myGLCD.setColor(223, 77, 55);
-  myGLCD.fillRoundRect (30, 130, 60, 70);
-  myGLCD.setColor(255, 255, 255);
-  myGLCD.drawRoundRect (30, 130, 60, 70);
-  myGLCD.setBackColor(223, 77, 55);
-  myGLCD.setColor(255, 255, 255);
-  
-  //LF Wheel Centre
-  myGLCD.setColor(223, 77, 55);
-  myGLCD.fillRoundRect (61, 130, 91, 70);
-  myGLCD.setColor(255, 255, 255);
-  myGLCD.drawRoundRect (61, 130, 91, 70);
-  myGLCD.setBackColor(223, 77, 55);
-  myGLCD.setColor(255, 255, 255);
-  
-  //LF Wheel Inner
-  myGLCD.setColor(223, 77, 55);
-  myGLCD.fillRoundRect (61, 130, 91, 70);
-  myGLCD.setColor(255, 255, 255);
-  myGLCD.drawRoundRect (61, 130, 91, 70);
-  myGLCD.setBackColor(223, 77, 55);
-  myGLCD.setColor(255, 255, 255);
-  
-  //RF Wheel Outer
-  myGLCD.setColor(223, 77, 55);
-  myGLCD.fillRoundRect (100, 130, 130, 70);
-  myGLCD.setColor(255, 255, 255);
-  myGLCD.drawRoundRect (100, 130, 130, 70);
-  myGLCD.setBackColor(223, 77, 55);
-  myGLCD.setColor(255, 255, 255);
-  
-    //RF Wheel Centre
-  myGLCD.setColor(223, 77, 55);
-  myGLCD.fillRoundRect (131, 130, 161, 70);
-  myGLCD.setColor(255, 255, 255);
-  myGLCD.drawRoundRect (131, 130, 161, 70);
-  myGLCD.setBackColor(223, 77, 55);
-  myGLCD.setColor(255, 255, 255);
-  
-  //RF Wheel Inner
-  myGLCD.setColor(223, 77, 55);
-  myGLCD.fillRoundRect (131, 130, 161, 70);
-  myGLCD.setColor(255, 255, 255);
-  myGLCD.drawRoundRect (131, 130, 161, 70);
-  myGLCD.setBackColor(223, 77, 55);
-  myGLCD.setColor(255, 255, 255);
+//=== LEFT WHEELS ===
+  for(double i = 30; i <= 100; i+=31){ //start at x = 30, add 31 up to 92 (3 iterations)
+      for (double j = 70; j <= 165; j+=71){ //start at y = 75, add 71 up to 170 
+        j = j+8; //spaces front and rear wheel sections
+      myGLCD.setColor(223, 77, 55);
+      myGLCD.fillRoundRect (i, j, i+31, j+71); //+31 adds equal section width, +71 adds equal section height
+      myGLCD.setColor(255, 255, 255);
+      myGLCD.drawRoundRect (i, j, i+31, j+71);
+      myGLCD.setBackColor(223, 77, 55);
+      myGLCD.setColor(255, 255, 255);
+      }
+  }
+
+//=== RIGHT WHEELS ===
+  for(double g = 140; g <= 210; g+=31){
+      for (double z = 70; z <= 165; z+=71){
+          z = z+8; 
+      myGLCD.setColor(223, 77, 55);
+      myGLCD.fillRoundRect (g, z, g+31, z+71); 
+      myGLCD.setColor(255, 255, 255);
+      myGLCD.drawRoundRect (g, z, g+31, z+71);
+      myGLCD.setBackColor(223, 77, 55);
+      myGLCD.setColor(255, 255, 255);
+      }
+  }
  
 }
-
