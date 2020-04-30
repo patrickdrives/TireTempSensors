@@ -15,6 +15,7 @@ MCP_CAN CAN(10);
 unsigned char len = 0; // length of received buffer
 unsigned char buf[8]; // 8 byte buffer
 unsigned int canID; // CAN Message ID
+double tempFactor = 0.02;
 
 // Try to initialize CAN at 500k
 void setup()
@@ -45,13 +46,20 @@ void loop()
 
         // Print the data one byte at a time
         for (int i = 0; i<len; i++) {
-            Serial.print(buf[i]);
+            Serial.print(int(buf[i]));
             if(i<(len-1)) Serial.print(",");
         }
         Serial.println();
+
+        double tempData = 0x0000; // zero out the data
+        tempData = (double)(((buf[2] & 0x007F) << 8) + buf[1]);
+        tempData = (tempData * tempFactor) - 0.01;
+        float celcius = tempData - 273.15;
+        Serial.print("Celcius Default: ");
+        Serial.println(celcius);
     }
     else {
-        Serial.println("No Message");
+        // Serial.println("No Message");
         // delay(10000);
     }
 }

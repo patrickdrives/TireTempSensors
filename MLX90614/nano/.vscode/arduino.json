@@ -1,5 +1,5 @@
 {
     "board": "atmel-avr-xminis:avr:atmega328p_xplained_mini",
-    "port": "COM5",
+    "port": "COM6",
     "sketch": "transmit.ino"
 }
