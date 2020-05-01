@@ -36,31 +36,45 @@ void setup()
 // Try to initialize CAN at 500k
 void loop()
 {
-    int data_low = 0;
-    int data_high = 0;
-    int pec = 0;
+    int data_low_A = 0;
+    int data_high_A = 0;
+    int pec_A = 0;
+    int data_high_B = 0;
+    int data_low_B = 0;
+    int pec_B = 0;
 
-    int dev = 0x4A << 1; // address location
-    i2c_start_wait(dev + I2C_WRITE);
+    int dev_A = 0x4A << 1; // address location sensor 1
+    int dev_B = 0x4B << 1; // address location sesnor 2
+
+    // read sensor 1
+    i2c_start_wait(dev_A + I2C_WRITE);
     i2c_write(0x07); // RAM location of Tobj1
-
-    i2c_rep_start(dev + I2C_READ);
-    data_low = i2c_readAck();
-    data_high = i2c_readAck();
-    pec = i2c_readNak();
+    i2c_rep_start(dev_A + I2C_READ);
+    data_low_A = i2c_readAck();
+    data_high_A = i2c_readAck();
+    pec_A = i2c_readNak();
     i2c_stop();
 
-    // TODO: Actually read sensor data
-    data[0] = (byte)dev;
-    data[1] = (byte)data_low;
-    data[2] = (byte)data_high;
-    data[3] = (byte)pec;
-    data[4] = 0x00;
-    data[5] = 0x00;
-    data[6] = 0x00;
-    data[7] = 0x00;
+    // read sensor 2
+    i2c_start_wait(dev_B + I2C_WRITE);
+    i2c_write(0x07);
+    i2c_rep_start(dev_B + I2C_READ);
+    data_low_B = i2c_readAck();
+    data_high_B = i2c_readAck();
+    pec_B = i2c_readNak();
+    i2c_stop();
+
+    // send data over CAN
+    data[0] = (byte)dev_A;
+    data[1] = (byte)data_low_A;
+    data[2] = (byte)data_high_A;
+    data[3] = (byte)pec_A;
+    data[4] = (byte)dev_B;
+    data[5] = (byte)data_low_B;
+    data[6] = (byte)data_high_B;
+    data[7] = (byte)pec_B;
 
     // CAN.sendMsgBuf(msg ID, standard frame, # of data bytes, data array)
     CAN.sendMsgBuf(0x01, 0, 8, data);
-    delay(500);
+    delay(100);
 }

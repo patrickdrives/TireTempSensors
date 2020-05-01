@@ -51,12 +51,21 @@ void loop()
         }
         Serial.println();
 
-        double tempData = 0x0000; // zero out the data
-        tempData = (double)(((buf[2] & 0x007F) << 8) + buf[1]);
-        tempData = (tempData * tempFactor) - 0.01;
-        float celcius = tempData - 273.15;
-        Serial.print("Celcius Default: ");
-        Serial.println(celcius);
+        // Sensor A
+        double tempData_A = 0x0000; // zero out the data
+        tempData_A = (double)(((buf[2] & 0x007F) << 8) + buf[1]);
+        tempData_A = (tempData_A * tempFactor) - 0.01;
+        float celcius_A = tempData_A - 273.15;
+        Serial.print("Celcius Sensor A: ");
+        Serial.println(celcius_A);
+
+        // Sensor B
+        double tempData_B = 0x0000; // zero out the data
+        tempData_B = (double)(((buf[6] & 0x007F) << 8) + buf[5]);
+        tempData_B = (tempData_B * tempFactor) - 0.01;
+        float celcius_B = tempData_B - 273.15;
+        Serial.print("Celcius Sensor B: ");
+        Serial.println(celcius_B);
     }
     else {
         // Serial.println("No Message");
